@@ -1,7 +1,11 @@
 package com.georgiaandtours.util;
 
+import com.georgiaandtours.dto.MessageDto;
 import com.georgiaandtours.dto.TourDto;
+import com.georgiaandtours.dto.UserDto;
+import com.georgiaandtours.model.Message;
 import com.georgiaandtours.model.Tour;
+import com.georgiaandtours.model.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -18,7 +22,26 @@ public class ModelConverter {
                 .price(tourDto.getPrice())
                 .duration(tourDto.getDuration())
                 .direction(tourDto.getDirection())
+                .language(tourDto.getLanguage())
                 .imageUrl(tourDto.getImageUrl())
+                .build();
+    }
+
+    public Message convert(MessageDto messageDto) {
+        return Message.builder()
+                .senderEmail(messageDto.getSenderEmail())
+                .receiverEmail(messageDto.getReceiverEmail())
+                .sender(messageDto.getSender())
+                .receiver(messageDto.getReceiver())
+                .payload(messageDto.getPayload())
+                .build();
+    }
+
+    public User convert(UserDto userDto) {
+        return User.builder()
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .password(userDto.getPassword())
                 .build();
     }
 
@@ -34,9 +57,31 @@ public class ModelConverter {
                             .price(tour.getPrice())
                             .duration(tour.getDuration())
                             .direction(tour.getDirection())
+                            .language(tour.getLanguage())
                             .imageUrl(tour.getImageUrl())
                             .build()
             );
         });
+
+        return tourDtos;
+    }
+
+    public List<MessageDto> convertMessagesToDtoList(List<Message> messages) {
+        List<MessageDto> messageDtos = new ArrayList<>();
+        messages.forEach(message -> {
+            messageDtos.add(
+                    MessageDto.builder()
+                            .id(message.getId())
+                            .senderEmail(message.getSenderEmail())
+                            .receiverEmail(message.getReceiverEmail())
+                            .sender(message.getSender())
+                            .receiver(message.getReceiver())
+                            .date(message.getDate())
+                            .payload(message.getPayload())
+                            .build()
+            );
+        });
+
+        return messageDtos;
     }
 }

@@ -4,6 +4,7 @@ import com.georgiaandtours.dto.TourDto;
 import com.georgiaandtours.model.Tour;
 import com.georgiaandtours.repository.ToursRepository;
 import com.georgiaandtours.util.ModelConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -12,8 +13,14 @@ import java.util.Optional;
 
 @Service
 public class ToursServiceImpl implements ToursService {
-    private ToursRepository toursRepository;
-    private ModelConverter modelConverter;
+    private final ToursRepository toursRepository;
+    private final ModelConverter modelConverter;
+
+    @Autowired
+    public ToursServiceImpl(ToursRepository toursRepository, ModelConverter modelConverter) {
+        this.toursRepository = toursRepository;
+        this.modelConverter = modelConverter;
+    }
 
     @Override
     public List<TourDto> getToursBy(String sorter) {

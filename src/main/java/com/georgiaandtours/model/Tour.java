@@ -29,6 +29,8 @@ public class Tour {
     private String duration;
     @Column(name = "direction")
     private String direction;
+    @Column(name = "language")
+    private String language;
     @Column(name = "imageUrl")
     private String imageUrl;
 }
