@@ -6,5 +6,5 @@ CREATE TABLE `georgia_and_tours`.`tours` (
   `price` VARCHAR(45) NOT NULL,
   `duration` VARCHAR(45) NOT NULL,
   `direction` MEDIUMTEXT NOT NULL,
-  `imageUrl` MEDIUMTEXT NOT NULL,
+  `image_url` MEDIUMTEXT NOT NULL,
   PRIMARY KEY (`id`));

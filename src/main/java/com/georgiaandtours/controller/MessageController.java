@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/messages")
+@RequestMapping("/georgiaandtours/messages")
 @CrossOrigin(origins = "*")
 public class MessageController {
     private final MessagesService messagesService;

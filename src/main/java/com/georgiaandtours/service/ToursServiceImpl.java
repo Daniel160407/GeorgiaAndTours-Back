@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ToursServiceImpl implements ToursService {
@@ -23,8 +24,8 @@ public class ToursServiceImpl implements ToursService {
     }
 
     @Override
-    public List<TourDto> getToursBy(String sorter) {
-        List<Tour> tours = toursRepository.findAll();
+    public List<TourDto> getToursBy(String sorter, String language) {
+        List<Tour> tours = toursRepository.findAllByLanguage(language);
         switch (sorter) {
             case "name":
                 tours.sort(Comparator.comparing(Tour::getName));
@@ -35,6 +36,24 @@ public class ToursServiceImpl implements ToursService {
         }
 
         return modelConverter.convertToursToDtoList(tours);
+    }
+
+    @Override
+    public List<TourDto> searchTours(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return modelConverter.convertToursToDtoList(toursRepository.findAll());
+        }
+
+        List<Tour> tours = toursRepository.findAll();
+        List<Tour> filteredTours = tours.stream()
+                .filter(tour ->
+                        tour.getName() != null && tour.getName().toLowerCase().contains(keyword.toLowerCase()) ||
+                                tour.getDescription() != null && tour.getDescription().toLowerCase().contains(keyword.toLowerCase()) ||
+                                tour.getRequirements() != null && tour.getRequirements().toLowerCase().contains(keyword.toLowerCase())
+                )
+                .collect(Collectors.toList());
+
+        return modelConverter.convertToursToDtoList(filteredTours);
     }
 
     @Override

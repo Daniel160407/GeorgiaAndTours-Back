@@ -8,4 +8,8 @@ public interface UsersService {
     void login(UserDto userDto);
 
     void register(UserDto userDto);
+
+    void saveUserSid(String email, String sid);
+
+    String getUserSidByEmail(String email);
 }

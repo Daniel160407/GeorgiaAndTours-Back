@@ -42,6 +42,7 @@ public class ModelConverter {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
+                .sid("")
                 .build();
     }
 
