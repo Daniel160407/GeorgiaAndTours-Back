@@ -33,6 +33,7 @@ public class ModelConverter {
                 .receiverEmail(messageDto.getReceiverEmail())
                 .sender(messageDto.getSender())
                 .receiver(messageDto.getReceiver())
+                .date(messageDto.getDate())
                 .payload(messageDto.getPayload())
                 .build();
     }
@@ -42,6 +43,7 @@ public class ModelConverter {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
+                .position(1)
                 .sid("")
                 .build();
     }
@@ -84,5 +86,19 @@ public class ModelConverter {
         });
 
         return messageDtos;
+    }
+
+    public List<UserDto> convertUsersToDtoList(List<User> users) {
+        List<UserDto> userDtos = new ArrayList<>();
+        users.forEach(user -> userDtos.add(
+                UserDto.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .position(user.getPosition())
+                        .build()
+        ));
+
+        return userDtos;
     }
 }

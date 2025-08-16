@@ -6,11 +6,15 @@ import com.georgiaandtours.exception.UserIsAlreadyRegisteredException;
 import com.georgiaandtours.model.User;
 import com.georgiaandtours.repository.UsersRepository;
 import com.georgiaandtours.util.ModelConverter;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsersServiceImpl implements UsersService {
@@ -45,11 +49,35 @@ public class UsersServiceImpl implements UsersService {
     public void saveUserSid(String email, String sid) {
         Optional<User> userOptional = usersRepository.findByEmail(email);
         userOptional.ifPresent(user -> {
-            if (!sid.equals(user.getSid())) {
-                user.setSid(sid);
-                usersRepository.save(user);
-            }
+            user.setSid(sid);
+            usersRepository.save(user);
         });
+    }
+
+    @Override
+    @Transactional
+    public void updatePositionFor(String email) {
+        List<User> users = usersRepository.findAllByOrderByPositionAsc();
+
+        Optional<User> userToMove = users.stream()
+                .filter(user -> email.equals(user.getEmail()))
+                .findFirst();
+
+        if (userToMove.isEmpty()) {
+            throw new IllegalArgumentException("User with email " + email + " not found");
+        }
+
+        User foundUser = userToMove.get();
+        users.remove(foundUser);
+
+        for (User user : users) {
+            user.setPosition(user.getPosition() + 1);
+        }
+
+        foundUser.setPosition(0);
+        users.addFirst(foundUser);
+
+        usersRepository.saveAll(users);
     }
 
     @Override
@@ -57,5 +85,14 @@ public class UsersServiceImpl implements UsersService {
         return usersRepository.findByEmail(email)
                 .map(User::getSid)
                 .orElse(null);
+    }
+
+    @Override
+    public List<UserDto> getUsers() {
+        return modelConverter.convertUsersToDtoList(
+                usersRepository.findAll().stream()
+                        .sorted(Comparator.comparing(User::getPosition))
+                        .collect(Collectors.toList())
+        );
     }
 }

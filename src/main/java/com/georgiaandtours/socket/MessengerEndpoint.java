@@ -1,12 +1,14 @@
 package com.georgiaandtours.socket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.georgiaandtours.dto.MessageDto;
-import com.georgiaandtours.repository.UsersRepository;
+import com.georgiaandtours.dto.UserDto;
 import com.georgiaandtours.service.MessagesService;
 import com.georgiaandtours.service.UsersService;
 import com.georgiaandtours.util.Constants;
 import com.georgiaandtours.util.ModelConverter;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -24,14 +26,12 @@ public class MessengerEndpoint extends TextWebSocketHandler {
 
     private WebSocketSession adminSession;
     private final ObjectMapper objectMapper;
-    private final ModelConverter modelConverter;
     private final UsersService usersService;
     private final MessagesService messagesService;
 
     @Autowired
-    public MessengerEndpoint(ObjectMapper objectMapper, ModelConverter modelConverter, UsersService usersService, MessagesService messagesService) {
+    public MessengerEndpoint(ObjectMapper objectMapper, UsersService usersService, MessagesService messagesService) {
         this.objectMapper = objectMapper;
-        this.modelConverter = modelConverter;
         this.usersService = usersService;
         this.messagesService = messagesService;
     }
@@ -59,25 +59,51 @@ public class MessengerEndpoint extends TextWebSocketHandler {
         MessageDto messageDto = objectMapper.readValue(payload, MessageDto.class);
 
         if (Constants.ADMIN_ROLE_STATIC.equals(messageDto.getSender())) {
-            if (!adminSession.isOpen()) {
+            if (adminSession == null || !adminSession.isOpen()) {
                 adminSession = session;
             }
 
-            String receiverSid = usersService.getUserSidByEmail(messageDto.getReceiverEmail());
-            for (WebSocketSession webSocketSession : sessions) {
-                if (receiverSid.equals(webSocketSession.getId()) && webSocketSession.isOpen()) {
-                    webSocketSession.sendMessage(textMessage);
+            if (!Constants.SAVE_ADMIN_SID_STATIC.equals(messageDto.getSubject())) {
+                String receiverSid = usersService.getUserSidByEmail(messageDto.getReceiverEmail());
+                for (WebSocketSession webSocketSession : sessions) {
+                    if (receiverSid.equals(webSocketSession.getId()) && webSocketSession.isOpen()) {
+                        webSocketSession.sendMessage(textMessage);
+                    }
                 }
-            }
 
-            messagesService.addMessage(messageDto);
+                messagesService.addMessage(messageDto);
+            } else if (Constants.SAVE_ADMIN_SID_STATIC.equals(messageDto.getSubject())) {
+                adminSession = session;
+            }
         } else if (Constants.CLIENT_ROLE_STATIC.equals(messageDto.getSender())) {
-            usersService.saveUserSid(messageDto.getSender(), session.getId());
+            try {
+                String subject = messageDto.getSubject();
+                if (Constants.USER_CREATION_STATIC.equals(subject)) {
+                    UserDto newUser = objectMapper.readValue(messageDto.getPayload(), UserDto.class);
+                    usersService.register(newUser);
 
-            if (adminSession.isOpen()) {
-                adminSession.sendMessage(textMessage);
+                    List<UserDto> userDtos = usersService.getUsers();
+                    messageDto.setSender(Constants.SERVER_ROLE_STATIC);
+                    messageDto.setPayload(objectMapper.writeValueAsString(userDtos));
+
+                    sendToAdminIfConnected(messageDto);
+                } else if (Constants.WEBSOCKET_SID_STATIC.equals(subject)) {
+                    usersService.saveUserSid(messageDto.getSenderEmail(), session.getId());
+                } else {
+                    usersService.saveUserSid(messageDto.getSenderEmail(), session.getId());
+                    usersService.updatePositionFor(messageDto.getSenderEmail());
+                    messagesService.addMessage(messageDto);
+                    sendToAdminIfConnected(textMessage);
+                }
+            } catch (JsonProcessingException | ServiceException ignore) {
             }
-            messagesService.addMessage(messageDto);
+        }
+    }
+
+    private void sendToAdminIfConnected(Object message) throws IOException {
+        if (adminSession != null && adminSession.isOpen()) {
+            String messageJson = objectMapper.writeValueAsString(message);
+            adminSession.sendMessage(new TextMessage(messageJson));
         }
     }
 }

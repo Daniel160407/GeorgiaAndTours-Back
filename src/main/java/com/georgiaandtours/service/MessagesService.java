@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface MessagesService {
-    List<MessageDto> getMessagesByEmail(String email);
+    List<MessageDto> getMessagesByIdOrEmail(Integer id, String email);
 
     List<MessageDto> addMessage(MessageDto messageDto);
 
