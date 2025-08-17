@@ -7,7 +7,9 @@ import java.util.List;
 
 @Service
 public interface ToursService {
-    List<TourDto> getToursBy(String sorter);
+    List<TourDto> getToursBy(String sorter, String language);
+
+    List<TourDto> searchTours(String keyword);
 
     List<TourDto> addTour(TourDto tourDto);
 

@@ -10,7 +10,10 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(InvalidEmailOrPasswordException.class)
+    @ExceptionHandler({InvalidEmailOrPasswordException.class,
+            UserIsAlreadyRegisteredException.class,
+            UserWithProvidedIdOrEmailNotFoundException.class,
+            IllegalArgumentException.class})
     public ResponseEntity<ApiError> handleException(InvalidEmailOrPasswordException e,
                                                     HttpServletRequest request) {
         ApiError apiError = new ApiError(

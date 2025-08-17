@@ -21,9 +21,15 @@ public class ToursController {
         this.toursService = toursService;
     }
 
-    @GetMapping("{sorter}")
-    public ResponseEntity<?> getTours(@PathVariable String sorter) {
-        List<TourDto> tourDtos = toursService.getToursBy(sorter);
+    @GetMapping
+    public ResponseEntity<?> getTours(@RequestParam String sorter, @RequestParam String language) {
+        List<TourDto> tourDtos = toursService.getToursBy(sorter, language);
+        return ResponseEntity.ok(tourDtos);
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<?> searchTours(@PathVariable String keyword) {
+        List<TourDto> tourDtos = toursService.searchTours(keyword);
         return ResponseEntity.ok(tourDtos);
     }
 

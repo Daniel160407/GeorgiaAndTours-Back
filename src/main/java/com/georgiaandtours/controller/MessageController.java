@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/messages")
+@RequestMapping("/georgiaandtours/messages")
 @CrossOrigin(origins = "*")
 public class MessageController {
     private final MessagesService messagesService;
@@ -20,9 +20,10 @@ public class MessageController {
         this.messagesService = messagesService;
     }
 
-    @GetMapping("{email}")
-    public ResponseEntity<?> getMessages(@PathVariable String email) {
-        List<MessageDto> messageDtos = messagesService.getMessagesByEmail(email);
+    @GetMapping
+    public ResponseEntity<?> getMessages(@RequestParam(required = false) Integer id,
+                                         @RequestParam(required = false) String email) {
+        List<MessageDto> messageDtos = messagesService.getMessagesByIdOrEmail(id, email);
         return ResponseEntity.ok(messageDtos);
     }
 

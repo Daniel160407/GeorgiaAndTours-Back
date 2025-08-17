@@ -16,6 +16,7 @@ public class MessageDto {
     private String sender;
     private String receiver;
     private String date;
+    private String subject;
     private String payload;
 
     public MessageDto(String senderEmail, String receiverEmail, String sender, String receiver, String payload) {
@@ -23,6 +24,12 @@ public class MessageDto {
         this.receiverEmail = receiverEmail;
         this.sender = sender;
         this.receiver = receiver;
+        this.payload = payload;
+    }
+
+    public MessageDto(String sender, String subject, String payload) {
+        this.sender = sender;
+        this.subject = subject;
         this.payload = payload;
     }
 }
