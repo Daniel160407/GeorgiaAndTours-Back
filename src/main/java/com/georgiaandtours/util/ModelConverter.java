@@ -1,10 +1,8 @@
 package com.georgiaandtours.util;
 
-import com.georgiaandtours.dto.CommentDto;
 import com.georgiaandtours.dto.MessageDto;
 import com.georgiaandtours.dto.TourDto;
 import com.georgiaandtours.dto.UserDto;
-import com.georgiaandtours.model.Comment;
 import com.georgiaandtours.model.Message;
 import com.georgiaandtours.model.Tour;
 import com.georgiaandtours.model.User;
@@ -47,17 +45,6 @@ public class ModelConverter {
                 .build();
     }
 
-    public Comment convert(CommentDto commentDto) {
-        return Comment.builder()
-                .id(commentDto.getId())
-                .tourId(commentDto.getTourId())
-                .name(commentDto.getName())
-                .date(commentDto.getDate())
-                .rating(commentDto.getRating())
-                .payload(commentDto.getPayload())
-                .build();
-    }
-
     public List<TourDto> convertToursToDtoList(List<Tour> tours) {
         List<TourDto> tourDtos = new ArrayList<>();
         tours.forEach(tour -> {
@@ -96,22 +83,5 @@ public class ModelConverter {
         });
 
         return messageDtos;
-    }
-
-    public List<CommentDto> convertCommentsToDtoList(List<Comment> comments) {
-        List<CommentDto> commentDtos = new ArrayList<>();
-        comments.forEach(comment -> {
-            commentDtos.add(
-                    CommentDto.builder()
-                            .id(comment.getId())
-                            .name(comment.getName())
-                            .date(comment.getDate())
-                            .rating(comment.getRating())
-                            .payload(comment.getPayload())
-                            .build()
-            );
-        });
-
-        return commentDtos;
     }
 }
