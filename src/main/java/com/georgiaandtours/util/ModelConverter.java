@@ -1,8 +1,10 @@
 package com.georgiaandtours.util;
 
+import com.georgiaandtours.dto.CommentDto;
 import com.georgiaandtours.dto.MessageDto;
 import com.georgiaandtours.dto.TourDto;
 import com.georgiaandtours.dto.UserDto;
+import com.georgiaandtours.model.Comment;
 import com.georgiaandtours.model.Message;
 import com.georgiaandtours.model.Tour;
 import com.georgiaandtours.model.User;
@@ -42,6 +44,17 @@ public class ModelConverter {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
+                .build();
+    }
+
+    public Comment convert(CommentDto commentDto) {
+        return Comment.builder()
+                .id(commentDto.getId())
+                .tourId(commentDto.getTourId())
+                .name(commentDto.getName())
+                .date(commentDto.getDate())
+                .rating(commentDto.getRating())
+                .payload(commentDto.getPayload())
                 .build();
     }
 
