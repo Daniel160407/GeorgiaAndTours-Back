@@ -61,6 +61,7 @@ public class SecurityConfig {
                                 "/georgiaandtours/tours",
                                 "/georgiaandtours/tours/**",
                                 "/georgiaandtours/tours/search/**",
+                                "/georgiaandtours/comments/**",
                                 "/socket"
                         ).permitAll()
 

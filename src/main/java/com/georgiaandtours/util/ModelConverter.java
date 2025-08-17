@@ -1,8 +1,10 @@
 package com.georgiaandtours.util;
 
+import com.georgiaandtours.dto.CommentDto;
 import com.georgiaandtours.dto.MessageDto;
 import com.georgiaandtours.dto.TourDto;
 import com.georgiaandtours.dto.UserDto;
+import com.georgiaandtours.model.Comment;
 import com.georgiaandtours.model.Message;
 import com.georgiaandtours.model.Tour;
 import com.georgiaandtours.model.User;
@@ -33,7 +35,6 @@ public class ModelConverter {
                 .receiverEmail(messageDto.getReceiverEmail())
                 .sender(messageDto.getSender())
                 .receiver(messageDto.getReceiver())
-                .date(messageDto.getDate())
                 .payload(messageDto.getPayload())
                 .build();
     }
@@ -43,8 +44,17 @@ public class ModelConverter {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
-                .position(1)
-                .sid("")
+                .build();
+    }
+
+    public Comment convert(CommentDto commentDto) {
+        return Comment.builder()
+                .id(commentDto.getId())
+                .tourId(commentDto.getTourId())
+                .name(commentDto.getName())
+                .date(commentDto.getDate())
+                .rating(commentDto.getRating())
+                .payload(commentDto.getPayload())
                 .build();
     }
 
@@ -88,17 +98,20 @@ public class ModelConverter {
         return messageDtos;
     }
 
-    public List<UserDto> convertUsersToDtoList(List<User> users) {
-        List<UserDto> userDtos = new ArrayList<>();
-        users.forEach(user -> userDtos.add(
-                UserDto.builder()
-                        .id(user.getId())
-                        .name(user.getName())
-                        .email(user.getEmail())
-                        .position(user.getPosition())
-                        .build()
-        ));
+    public List<CommentDto> convertCommentsToDtoList(List<Comment> comments) {
+        List<CommentDto> commentDtos = new ArrayList<>();
+        comments.forEach(comment -> {
+            commentDtos.add(
+                    CommentDto.builder()
+                            .id(comment.getId())
+                            .name(comment.getName())
+                            .date(comment.getDate())
+                            .rating(comment.getRating())
+                            .payload(comment.getPayload())
+                            .build()
+            );
+        });
 
-        return userDtos;
+        return commentDtos;
     }
 }
