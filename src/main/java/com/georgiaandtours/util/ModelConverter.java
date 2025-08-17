@@ -84,4 +84,21 @@ public class ModelConverter {
 
         return messageDtos;
     }
+
+    public List<CommentDto> convertCommentsToDtoList(List<Comment> comments) {
+        List<CommentDto> commentDtos = new ArrayList<>();
+        comments.forEach(comment -> {
+            commentDtos.add(
+                    CommentDto.builder()
+                            .id(comment.getId())
+                            .name(comment.getName())
+                            .date(comment.getDate())
+                            .rating(comment.getRating())
+                            .payload(comment.getPayload())
+                            .build()
+            );
+        });
+
+        return commentDtos;
+    }
 }
