@@ -46,12 +46,16 @@ public class SecurityConfig {
                         .requestMatchers(
                                 HttpMethod.GET,
                                 "/adminpanel",
+                                "/home",
+                                "/contact",
+                                "/adminpanel/home",
+                                "/adminpanel/contact",
                                 "/tours",
                                 "/*.html",
                                 "/assets/**",
                                 "/images/**",
                                 "/fonts/**",
-                                "/svg/**",
+                                "/*.svg",
                                 "/sounds/notification-sound.wav"
                         ).permitAll()
 

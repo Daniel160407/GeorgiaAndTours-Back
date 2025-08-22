@@ -76,6 +76,7 @@ public class ToursServiceImpl implements ToursService {
             tour.setDuration(tourDto.getDuration());
             tour.setDirection(tourDto.getDirection());
             tour.setLanguage(tourDto.getLanguage());
+            tour.setBadge(tourDto.getBadge());
             tour.setImageUrl(tourDto.getImageUrl());
 
             toursRepository.save(tour);

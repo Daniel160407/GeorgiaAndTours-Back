@@ -8,6 +8,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +19,11 @@ import java.util.Optional;
 public class CommentsServiceImpl implements CommentsService {
     private final CommentsRepository commentsRepository;
     private final ModelConverter modelConverter;
+
+    private final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd HH:mm")
+            .appendFraction(ChronoField.MICRO_OF_SECOND, 0, 6, true)
+            .toFormatter();
 
     @Autowired
     public CommentsServiceImpl(CommentsRepository commentsRepository, ModelConverter modelConverter) {
@@ -30,6 +39,7 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public List<CommentDto> addComment(CommentDto commentDto) {
+        commentDto.setDate(LocalDateTime.now().format(formatter));
         Comment convertedComment = modelConverter.convert(commentDto);
         commentsRepository.save(convertedComment);
 

@@ -12,6 +12,7 @@ public class Constants {
     private String WEBSOCKET_SID;
     private String USER_CREATION;
     private String SAVE_ADMIN_SID;
+    private String BOT_MESSAGE;
 
     public static String ADMIN_ROLE_STATIC;
     public static String CLIENT_ROLE_STATIC;
@@ -19,6 +20,7 @@ public class Constants {
     public static String WEBSOCKET_SID_STATIC;
     public static String USER_CREATION_STATIC;
     public static String SAVE_ADMIN_SID_STATIC;
+    public static String BOT_MESSAGE_STATIC;
 
     public void setADMIN_ROLE(String ADMIN_ROLE) {
         this.ADMIN_ROLE = ADMIN_ROLE;
@@ -48,5 +50,10 @@ public class Constants {
     public void setSAVE_ADMIN_SID(String SAVE_ADMIN_SID) {
         this.SAVE_ADMIN_SID = SAVE_ADMIN_SID;
         SAVE_ADMIN_SID_STATIC = SAVE_ADMIN_SID;
+    }
+
+    public void setBOT_MESSAGE(String BOT_MESSAGE) {
+        this.BOT_MESSAGE = BOT_MESSAGE;
+        BOT_MESSAGE_STATIC = BOT_MESSAGE;
     }
 }

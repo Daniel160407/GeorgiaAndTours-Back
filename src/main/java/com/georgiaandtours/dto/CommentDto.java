@@ -16,6 +16,4 @@ public class CommentDto {
     private String date;
     private Integer rating;
     private String payload;
-
-
 }

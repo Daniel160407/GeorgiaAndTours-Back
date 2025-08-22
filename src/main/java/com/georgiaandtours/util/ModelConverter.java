@@ -25,6 +25,7 @@ public class ModelConverter {
                 .duration(tourDto.getDuration())
                 .direction(tourDto.getDirection())
                 .language(tourDto.getLanguage())
+                .badge(tourDto.getBadge())
                 .imageUrl(tourDto.getImageUrl())
                 .build();
     }
@@ -35,6 +36,7 @@ public class ModelConverter {
                 .receiverEmail(messageDto.getReceiverEmail())
                 .sender(messageDto.getSender())
                 .receiver(messageDto.getReceiver())
+                .date(messageDto.getDate())
                 .payload(messageDto.getPayload())
                 .build();
     }
@@ -44,6 +46,8 @@ public class ModelConverter {
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
+                .position(0)
+                .sid("")
                 .build();
     }
 
@@ -58,59 +62,68 @@ public class ModelConverter {
                 .build();
     }
 
+    public List<UserDto> convertUsersToDtoList(List<User> users) {
+        List<UserDto> userDtos = new ArrayList<>();
+        users.forEach(user -> userDtos.add(
+                UserDto.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .position(user.getPosition())
+                        .sid(user.getSid())
+                        .build()
+        ));
+        return userDtos;
+    }
+
     public List<TourDto> convertToursToDtoList(List<Tour> tours) {
         List<TourDto> tourDtos = new ArrayList<>();
-        tours.forEach(tour -> {
-            tourDtos.add(
-                    TourDto.builder()
-                            .id(tour.getId())
-                            .name(tour.getName())
-                            .description(tour.getDescription())
-                            .requirements(tour.getRequirements())
-                            .price(tour.getPrice())
-                            .duration(tour.getDuration())
-                            .direction(tour.getDirection())
-                            .language(tour.getLanguage())
-                            .imageUrl(tour.getImageUrl())
-                            .build()
-            );
-        });
+        tours.forEach(tour -> tourDtos.add(
+                TourDto.builder()
+                        .id(tour.getId())
+                        .name(tour.getName())
+                        .description(tour.getDescription())
+                        .requirements(tour.getRequirements())
+                        .price(tour.getPrice())
+                        .duration(tour.getDuration())
+                        .direction(tour.getDirection())
+                        .language(tour.getLanguage())
+                        .badge(tour.getBadge())
+                        .imageUrl(tour.getImageUrl())
+                        .build()
+        ));
 
         return tourDtos;
     }
 
     public List<MessageDto> convertMessagesToDtoList(List<Message> messages) {
         List<MessageDto> messageDtos = new ArrayList<>();
-        messages.forEach(message -> {
-            messageDtos.add(
-                    MessageDto.builder()
-                            .id(message.getId())
-                            .senderEmail(message.getSenderEmail())
-                            .receiverEmail(message.getReceiverEmail())
-                            .sender(message.getSender())
-                            .receiver(message.getReceiver())
-                            .date(message.getDate())
-                            .payload(message.getPayload())
-                            .build()
-            );
-        });
+        messages.forEach(message -> messageDtos.add(
+                MessageDto.builder()
+                        .id(message.getId())
+                        .senderEmail(message.getSenderEmail())
+                        .receiverEmail(message.getReceiverEmail())
+                        .sender(message.getSender())
+                        .receiver(message.getReceiver())
+                        .date(message.getDate())
+                        .payload(message.getPayload())
+                        .build()
+        ));
 
         return messageDtos;
     }
 
     public List<CommentDto> convertCommentsToDtoList(List<Comment> comments) {
         List<CommentDto> commentDtos = new ArrayList<>();
-        comments.forEach(comment -> {
-            commentDtos.add(
-                    CommentDto.builder()
-                            .id(comment.getId())
-                            .name(comment.getName())
-                            .date(comment.getDate())
-                            .rating(comment.getRating())
-                            .payload(comment.getPayload())
-                            .build()
-            );
-        });
+        comments.forEach(comment -> commentDtos.add(
+                CommentDto.builder()
+                        .id(comment.getId())
+                        .name(comment.getName())
+                        .date(comment.getDate())
+                        .rating(comment.getRating())
+                        .payload(comment.getPayload())
+                        .build()
+        ));
 
         return commentDtos;
     }

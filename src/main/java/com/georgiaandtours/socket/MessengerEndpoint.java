@@ -17,6 +17,10 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 
 @Component
@@ -28,6 +32,11 @@ public class MessengerEndpoint extends TextWebSocketHandler {
     private final ObjectMapper objectMapper;
     private final UsersService usersService;
     private final MessagesService messagesService;
+
+    private final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd HH:mm:ss")
+            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+            .toFormatter();
 
     @Autowired
     public MessengerEndpoint(ObjectMapper objectMapper, UsersService usersService, MessagesService messagesService) {
@@ -93,7 +102,8 @@ public class MessengerEndpoint extends TextWebSocketHandler {
                     usersService.saveUserSid(messageDto.getSenderEmail(), session.getId());
                     usersService.updatePositionFor(messageDto.getSenderEmail());
                     messagesService.addMessage(messageDto);
-                    sendToAdminIfConnected(textMessage);
+                    messageDto.setDate(LocalDateTime.now().format(formatter));
+                    sendToAdminIfConnected(new TextMessage(objectMapper.writeValueAsString(messageDto)));
                 }
             } catch (JsonProcessingException | ServiceException ignore) {
             }

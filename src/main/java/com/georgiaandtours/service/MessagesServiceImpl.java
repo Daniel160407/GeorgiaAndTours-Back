@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class MessagesServiceImpl implements MessagesService {
@@ -26,10 +25,13 @@ public class MessagesServiceImpl implements MessagesService {
     private final UsersRepository usersRepository;
     private final ModelConverter modelConverter;
 
-    // Create a flexible formatter that handles both with and without microseconds
     private final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd HH:mm:ss")
-            .appendFraction(ChronoField.MICRO_OF_SECOND, 0, 6, true) // handles 0-6 digits of microseconds
+            .appendFraction(ChronoField.NANO_OF_SECOND, 0, 9, true)
+            .toFormatter();
+
+    private final DateTimeFormatter lenientFormatter = new DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd[ HH:mm[:ss[.SSSSSS]]]")
             .toFormatter();
 
     @Autowired
@@ -80,6 +82,23 @@ public class MessagesServiceImpl implements MessagesService {
         return combineMessagesByEmail(senderEmail);
     }
 
+    private LocalDateTime parseDateTime(String dateString) {
+        try {
+            return LocalDateTime.parse(dateString, formatter);
+        } catch (Exception e) {
+            try {
+                return LocalDateTime.parse(dateString, lenientFormatter);
+            } catch (Exception ex) {
+                if (dateString.contains(" ")) {
+                    String datePart = dateString.split(" ")[0];
+                    return LocalDateTime.parse(datePart + "T00:00:00");
+                } else {
+                    return LocalDateTime.parse(dateString + "T00:00:00");
+                }
+            }
+        }
+    }
+
     private List<MessageDto> combineMessagesByEmail(String email) {
         List<Message> sentMessages = messagesRepository.findAllBySenderEmail(email);
         List<Message> receivedMessages = messagesRepository.findAllByReceiverEmail(email);
@@ -89,7 +108,7 @@ public class MessagesServiceImpl implements MessagesService {
         combinedMessages.addAll(receivedMessages);
 
         combinedMessages.sort(Comparator.comparing(
-                m -> LocalDateTime.parse(m.getDate(), formatter),
+                m -> parseDateTime(m.getDate()),
                 Comparator.reverseOrder()
         ));
 

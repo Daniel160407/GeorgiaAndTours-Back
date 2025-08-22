@@ -31,6 +31,8 @@ public class Tour {
     private String direction;
     @Column(name = "language")
     private String language;
+    @Column(name = "badge")
+    private String badge;
     @Column(name = "image_url")
     private String imageUrl;
 }

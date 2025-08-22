@@ -18,5 +18,6 @@ public class TourDto {
     private String duration;
     private String direction;
     private String language;
+    private String badge;
     private String imageUrl;
 }
