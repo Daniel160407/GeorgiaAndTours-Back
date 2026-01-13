@@ -36,17 +36,6 @@ public class ModelConverter {
                 .build();
     }
 
-    public Comment convert(CommentDto commentDto) {
-        return Comment.builder()
-                .id(commentDto.getId())
-                .tourId(commentDto.getTourId())
-                .name(commentDto.getName())
-                .date(commentDto.getDate())
-                .rating(commentDto.getRating())
-                .payload(commentDto.getPayload())
-                .build();
-    }
-
     public List<UserDto> convertUsersToDtoList(List<User> users) {
         List<UserDto> userDtos = new ArrayList<>();
         users.forEach(user -> userDtos.add(
@@ -76,20 +65,5 @@ public class ModelConverter {
         ));
 
         return messageDtos;
-    }
-
-    public List<CommentDto> convertCommentsToDtoList(List<Comment> comments) {
-        List<CommentDto> commentDtos = new ArrayList<>();
-        comments.forEach(comment -> commentDtos.add(
-                CommentDto.builder()
-                        .id(comment.getId())
-                        .name(comment.getName())
-                        .date(comment.getDate())
-                        .rating(comment.getRating())
-                        .payload(comment.getPayload())
-                        .build()
-        ));
-
-        return commentDtos;
     }
 }
