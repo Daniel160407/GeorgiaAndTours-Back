@@ -4,10 +4,8 @@ import com.georgiaandtours.dto.MessageDto;
 import com.georgiaandtours.exception.UserWithProvidedIdOrEmailNotFoundException;
 import com.georgiaandtours.mapper.MessageMapper;
 import com.georgiaandtours.model.Message;
-import com.georgiaandtours.model.User;
 import com.georgiaandtours.repository.MessagesRepository;
 import com.georgiaandtours.repository.UsersRepository;
-import com.georgiaandtours.util.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

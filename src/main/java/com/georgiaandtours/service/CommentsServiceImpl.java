@@ -4,7 +4,6 @@ import com.georgiaandtours.dto.CommentDto;
 import com.georgiaandtours.mapper.CommentMapper;
 import com.georgiaandtours.model.Comment;
 import com.georgiaandtours.repository.CommentsRepository;
-import com.georgiaandtours.util.ModelConverter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

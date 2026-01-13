@@ -3,9 +3,9 @@ package com.georgiaandtours.service;
 import com.georgiaandtours.dto.UserDto;
 import com.georgiaandtours.exception.InvalidEmailOrPasswordException;
 import com.georgiaandtours.exception.UserIsAlreadyRegisteredException;
+import com.georgiaandtours.mapper.UserMapper;
 import com.georgiaandtours.model.User;
 import com.georgiaandtours.repository.UsersRepository;
-import com.georgiaandtours.util.ModelConverter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 @Service
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository usersRepository;
-    private final ModelConverter modelConverter;
+    private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UsersServiceImpl(UsersRepository usersRepository, ModelConverter modelConverter, BCryptPasswordEncoder passwordEncoder) {
+    public UsersServiceImpl(UsersRepository usersRepository, UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
         this.usersRepository = usersRepository;
-        this.modelConverter = modelConverter;
+        this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -42,7 +42,7 @@ public class UsersServiceImpl implements UsersService {
                 .map(user -> {
                     throw new UserIsAlreadyRegisteredException("User with same email is already registered!");
                 })
-                .orElseGet(() -> usersRepository.save(modelConverter.convert(userDto)));
+                .orElseGet(() -> usersRepository.save(userMapper.toEntity(userDto)));
     }
 
     @Override
@@ -89,7 +89,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public List<UserDto> getUsers() {
-        return modelConverter.convertUsersToDtoList(
+        return userMapper.toDtoList(
                 usersRepository.findAll().stream()
                         .sorted(Comparator.comparing(User::getPosition))
                         .collect(Collectors.toList())

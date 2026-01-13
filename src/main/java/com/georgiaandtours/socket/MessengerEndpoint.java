@@ -7,7 +7,6 @@ import com.georgiaandtours.dto.UserDto;
 import com.georgiaandtours.service.MessagesService;
 import com.georgiaandtours.service.UsersService;
 import com.georgiaandtours.util.Constants;
-import com.georgiaandtours.util.ModelConverter;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
