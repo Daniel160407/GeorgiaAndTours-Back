@@ -19,7 +19,6 @@ import java.util.Optional;
 @Service
 public class CommentsServiceImpl implements CommentsService {
     private final CommentsRepository commentsRepository;
-    private final ModelConverter modelConverter;
     private final CommentMapper commentMapper;
 
     private final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
@@ -28,9 +27,8 @@ public class CommentsServiceImpl implements CommentsService {
             .toFormatter();
 
     @Autowired
-    public CommentsServiceImpl(CommentsRepository commentsRepository, ModelConverter modelConverter, CommentMapper commentMapper) {
+    public CommentsServiceImpl(CommentsRepository commentsRepository, CommentMapper commentMapper) {
         this.commentsRepository = commentsRepository;
-        this.modelConverter = modelConverter;
         this.commentMapper = commentMapper;
     }
 

@@ -15,17 +15,6 @@ import java.util.List;
 
 @Component
 public class ModelConverter {
-    public Message convert(MessageDto messageDto) {
-        return Message.builder()
-                .senderEmail(messageDto.getSenderEmail())
-                .receiverEmail(messageDto.getReceiverEmail())
-                .sender(messageDto.getSender())
-                .receiver(messageDto.getReceiver())
-                .date(messageDto.getDate())
-                .payload(messageDto.getPayload())
-                .build();
-    }
-
     public User convert(UserDto userDto) {
         return User.builder()
                 .name(userDto.getName())
@@ -48,22 +37,5 @@ public class ModelConverter {
                         .build()
         ));
         return userDtos;
-    }
-
-    public List<MessageDto> convertMessagesToDtoList(List<Message> messages) {
-        List<MessageDto> messageDtos = new ArrayList<>();
-        messages.forEach(message -> messageDtos.add(
-                MessageDto.builder()
-                        .id(message.getId())
-                        .senderEmail(message.getSenderEmail())
-                        .receiverEmail(message.getReceiverEmail())
-                        .sender(message.getSender())
-                        .receiver(message.getReceiver())
-                        .date(message.getDate())
-                        .payload(message.getPayload())
-                        .build()
-        ));
-
-        return messageDtos;
     }
 }

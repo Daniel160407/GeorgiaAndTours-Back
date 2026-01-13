@@ -2,6 +2,7 @@ package com.georgiaandtours.service;
 
 import com.georgiaandtours.dto.MessageDto;
 import com.georgiaandtours.exception.UserWithProvidedIdOrEmailNotFoundException;
+import com.georgiaandtours.mapper.MessageMapper;
 import com.georgiaandtours.model.Message;
 import com.georgiaandtours.model.User;
 import com.georgiaandtours.repository.MessagesRepository;
@@ -23,7 +24,7 @@ import java.util.Optional;
 public class MessagesServiceImpl implements MessagesService {
     private final MessagesRepository messagesRepository;
     private final UsersRepository usersRepository;
-    private final ModelConverter modelConverter;
+    private final MessageMapper messageMapper;
 
     private final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
             .appendPattern("yyyy-MM-dd HH:mm:ss")
@@ -35,10 +36,10 @@ public class MessagesServiceImpl implements MessagesService {
             .toFormatter();
 
     @Autowired
-    public MessagesServiceImpl(MessagesRepository messagesRepository, UsersRepository usersRepository, ModelConverter modelConverter) {
+    public MessagesServiceImpl(MessagesRepository messagesRepository, UsersRepository usersRepository, MessageMapper messageMapper) {
         this.messagesRepository = messagesRepository;
         this.usersRepository = usersRepository;
-        this.modelConverter = modelConverter;
+        this.messageMapper = messageMapper;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class MessagesServiceImpl implements MessagesService {
     @Override
     public List<MessageDto> addMessage(MessageDto messageDto) {
         messageDto.setDate(LocalDateTime.now().format(formatter));
-        Message message = modelConverter.convert(messageDto);
+        Message message = messageMapper.toEntity(messageDto);
         messagesRepository.save(message);
         return combineMessagesByEmail(messageDto.getSenderEmail());
     }
@@ -68,8 +69,9 @@ public class MessagesServiceImpl implements MessagesService {
     public List<MessageDto> editMessage(MessageDto messageDto) {
         Optional<Message> messageOptional = messagesRepository.findById(messageDto.getId());
         messageOptional.ifPresent(message -> {
-            message.setDate(LocalDateTime.now().format(formatter));
-            message.setPayload(messageDto.getPayload());
+            messageDto.setDate(LocalDateTime.now().format(formatter));
+            messageMapper.updateMessageFromDto(message, messageDto);
+
             messagesRepository.save(message);
         });
         return combineMessagesByEmail(messageDto.getSenderEmail());
@@ -112,6 +114,6 @@ public class MessagesServiceImpl implements MessagesService {
                 Comparator.reverseOrder()
         ));
 
-        return modelConverter.convertMessagesToDtoList(combinedMessages);
+        return messageMapper.toDtoList(combinedMessages);
     }
 }
