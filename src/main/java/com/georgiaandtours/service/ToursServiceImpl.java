@@ -1,9 +1,9 @@
 package com.georgiaandtours.service;
 
 import com.georgiaandtours.dto.TourDto;
+import com.georgiaandtours.mapper.TourMapper;
 import com.georgiaandtours.model.Tour;
 import com.georgiaandtours.repository.ToursRepository;
-import com.georgiaandtours.util.ModelConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public class ToursServiceImpl implements ToursService {
     private final ToursRepository toursRepository;
-    private final ModelConverter modelConverter;
+    private final TourMapper tourMapper;
 
     @Autowired
-    public ToursServiceImpl(ToursRepository toursRepository, ModelConverter modelConverter) {
+    public ToursServiceImpl(ToursRepository toursRepository, TourMapper tourMapper) {
         this.toursRepository = toursRepository;
-        this.modelConverter = modelConverter;
+        this.tourMapper = tourMapper;
     }
 
     @Override
@@ -35,13 +35,13 @@ public class ToursServiceImpl implements ToursService {
                 break;
         }
 
-        return modelConverter.convertToursToDtoList(tours);
+        return tourMapper.toDtoList(tours);
     }
 
     @Override
     public List<TourDto> searchTours(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return modelConverter.convertToursToDtoList(toursRepository.findAll());
+            return tourMapper.toDtoList(toursRepository.findAll());
         }
 
         List<Tour> tours = toursRepository.findAll();
@@ -53,37 +53,28 @@ public class ToursServiceImpl implements ToursService {
                 )
                 .collect(Collectors.toList());
 
-        return modelConverter.convertToursToDtoList(filteredTours);
+        return tourMapper.toDtoList(filteredTours);
     }
 
     @Override
     public List<TourDto> addTour(TourDto tourDto) {
-        Tour convertedTour = modelConverter.convert(tourDto);
+        Tour convertedTour = tourMapper.toEntity(tourDto);
         toursRepository.save(convertedTour);
 
         List<Tour> tours = toursRepository.findAll();
-        return modelConverter.convertToursToDtoList(tours);
+        return tourMapper.toDtoList(tours);
     }
 
     @Override
     public List<TourDto> editTour(TourDto tourDto) {
         Optional<Tour> tourOptional = toursRepository.findById(tourDto.getId());
         tourOptional.ifPresent(tour -> {
-            tour.setName(tourDto.getName());
-            tour.setDescription(tourDto.getDescription());
-            tour.setRequirements(tourDto.getRequirements());
-            tour.setPrice(tourDto.getPrice());
-            tour.setDuration(tourDto.getDuration());
-            tour.setDirection(tourDto.getDirection());
-            tour.setLanguage(tourDto.getLanguage());
-            tour.setBadge(tourDto.getBadge());
-            tour.setImageUrl(tourDto.getImageUrl());
-
+            tourMapper.updateTourFromDto(tour, tourDto);
             toursRepository.save(tour);
         });
 
         List<Tour> tours = toursRepository.findAll();
-        return modelConverter.convertToursToDtoList(tours);
+        return tourMapper.toDtoList(tours);
     }
 
     @Override
@@ -91,6 +82,6 @@ public class ToursServiceImpl implements ToursService {
         toursRepository.deleteById(id);
 
         List<Tour> tours = toursRepository.findAll();
-        return modelConverter.convertToursToDtoList(tours);
+        return tourMapper.toDtoList(tours);
     }
 }

@@ -15,21 +15,6 @@ import java.util.List;
 
 @Component
 public class ModelConverter {
-    public Tour convert(TourDto tourDto) {
-        return Tour.builder()
-                .id(tourDto.getId())
-                .name(tourDto.getName())
-                .description(tourDto.getDescription())
-                .requirements(tourDto.getRequirements())
-                .price(tourDto.getPrice())
-                .duration(tourDto.getDuration())
-                .direction(tourDto.getDirection())
-                .language(tourDto.getLanguage())
-                .badge(tourDto.getBadge())
-                .imageUrl(tourDto.getImageUrl())
-                .build();
-    }
-
     public Message convert(MessageDto messageDto) {
         return Message.builder()
                 .senderEmail(messageDto.getSenderEmail())
@@ -74,26 +59,6 @@ public class ModelConverter {
                         .build()
         ));
         return userDtos;
-    }
-
-    public List<TourDto> convertToursToDtoList(List<Tour> tours) {
-        List<TourDto> tourDtos = new ArrayList<>();
-        tours.forEach(tour -> tourDtos.add(
-                TourDto.builder()
-                        .id(tour.getId())
-                        .name(tour.getName())
-                        .description(tour.getDescription())
-                        .requirements(tour.getRequirements())
-                        .price(tour.getPrice())
-                        .duration(tour.getDuration())
-                        .direction(tour.getDirection())
-                        .language(tour.getLanguage())
-                        .badge(tour.getBadge())
-                        .imageUrl(tour.getImageUrl())
-                        .build()
-        ));
-
-        return tourDtos;
     }
 
     public List<MessageDto> convertMessagesToDtoList(List<Message> messages) {
